@@ -11,6 +11,7 @@
 <body>
     <h1>オイスター掲示板</h1>
     <?php
+    date_default_timezone_set('Asia/Tokyo');
     function h($str)
     {
         return htmlspecialchars($str, ENT_QUOTES, "UTF-8");
@@ -19,26 +20,26 @@
     $comment = $_POST['comment'];
     $date = $_POST['date'];
     $filename = "memo.txt";
+    $datetime = date('Y/m/d H:i');
 
-    $fp = fopen($filename, 'a');
-    fputs($fp, $date . "  ");
-    fputs($fp, $name . "  ");
-    fputs($fp, $comment . PHP_EOL);
+    if (isset($comment)) {
+        $fp = fopen($filename, 'a');
+        fputs($fp, $date . "  ");
+        fputs($fp, $name . "  ");
+        fputs($fp, $comment . PHP_EOL);
+        fclose($fp);
+    }
 
-
-    fclose($fp);
 
     $files = file($filename);
 
     foreach ($files as $value) {
-        echo "<p>";
-        echo "$value";
-        echo "</p>";
+        echo '<p>' . h($value) . '</p>';
     }
 
     ?>
     <form name="test_form" action="index.php" method="post">
-        <input type="hidden" name="date" value=<?php date('Y-m-d H:i:s') . "<br/>\n";  ?>>
+        <input type="hidden" name="date" value="<? echo "$datetime" ?>">
         <p>名前：<input type="text" name="name"></p>
         <p>コメント：</p>
         <p><textarea cols="80" rows="10" name="comment"></textarea></p>
